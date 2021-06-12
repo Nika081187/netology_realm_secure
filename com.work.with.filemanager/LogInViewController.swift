@@ -229,8 +229,10 @@ class LogInViewController: UIViewController {
     }
     
     func getConfig() -> Realm.Configuration {
-        let key = NSMutableData(length: 64)!
-        let _ = SecRandomCopyBytes(kSecRandomDefault, key.length, UnsafeMutableRawPointer(key.mutableBytes))
+        var key = Data(count: 64)
+        _ = key.withUnsafeMutableBytes { (pointer: UnsafeMutableRawBufferPointer) in
+            SecRandomCopyBytes(kSecRandomDefault, 64, pointer.baseAddress!)
+        }
 
         return Realm.Configuration(encryptionKey: key as Data)
     }
