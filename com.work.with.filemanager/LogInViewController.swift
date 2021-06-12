@@ -228,10 +228,18 @@ class LogInViewController: UIViewController {
         }
     }
     
+    func getConfig() -> Realm.Configuration {
+        let key = NSMutableData(length: 64)!
+        let _ = SecRandomCopyBytes(kSecRandomDefault, key.length, UnsafeMutableRawPointer(key.mutableBytes))
+
+        return Realm.Configuration(encryptionKey: key as Data)
+    }
+    
     //REALM
     func addUser(user: User) {
+
         do {
-            guard let realm = try? Realm() else {
+            guard let realm = try? Realm(configuration: getConfig()) else {
                 print("Ошибка инициализации Realm")
                 return
             }
@@ -245,7 +253,7 @@ class LogInViewController: UIViewController {
     }
     
     func authoriseUser() -> Bool {
-        guard let realm = try? Realm() else {
+        guard let realm = try? Realm(configuration: getConfig()) else {
             print("Ошибка инициализации Realm")
             return false
         }
